@@ -1,0 +1,11 @@
+--- 
+- hosts: webservers
+  remote_user: root
+  sudo: True
+  sudo_user: root
+  tasks:     
+
+    - name: Execute Shell Script to create Repo 
+      command: sh /root/create_repo.sh
+      register: shell_output
+    - debug: msg="{{shell_output.stdout.split('\n')}}"
