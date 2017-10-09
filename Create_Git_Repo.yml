@@ -1,0 +1,19 @@
+---
+
+- hosts: webservers
+  remote_user: root
+  sudo: true
+  sudo_user: root
+  tasks:
+
+    - name: ensure git is installed
+      action: yum pkg=git
+
+    - name: create repositories
+      action: command chdir=/root/TestAnsibleCode1 creates=/root/TestAnsibleCode1/HEAD git init --bare
+
+    - name: ensure repositories permisions
+      action: command chdir=/root/TestAnsibleCode1 chown root.root -R .
+
+    - name: ensure post-receive hooks exists
+      action: template src=hooks/post-receive.j2 dest=/root/TestAnsibleCode1/hooks/post-receive owner=git mode=0755
