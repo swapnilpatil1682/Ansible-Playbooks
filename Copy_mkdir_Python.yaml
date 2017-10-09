@@ -1,0 +1,53 @@
+--- 
+
+- hosts: webservers
+  remote_user: root
+  sudo: True
+  sudo_user: root
+  tasks:     
+
+    - name: Copy the files to local  incoming layer.
+      copy: src={{ item }} dest=/kohls/stage/incoming/cmdm/
+      with_fileglob:
+         - /home/administrator/Projects/evoc/CurrentData/*
+
+    - name: Copy the Azkaban tar folder to /root directory of remote host
+      copy: src={{ item }} dest=/root/
+      with_fileglob:
+         - /home/administrator/azkaban-solo-server-2.5.0.tar.gz
+
+#    - name: Create an /evoc directory.
+#      shell: mkdir /evoc  
+ 
+#    - name: Copy the Project Directory to remote host
+#      copy: src=/home/administrator/Projects/evoc/evoc dest=/evoc
+  
+    - name: Copy Run book script on remote host
+      copy: src={{ item }} dest=/root/
+      with_fileglob:
+         - /etc/ansible/runbook.py
+  
+    - name: Execute Run Book script
+      command: python /root/runbook.py
+      register: python_output
+    - debug: msg="{{python_output.stdout.split('\n')}}"
+
+    - name: Copy Setup script on remote host
+      copy: src={{ item }} dest=/root/
+      with_fileglob:
+         - /etc/ansible/setup.py
+ 
+    - name: Execute cmdm-setup script
+      command: python /root/setup.py
+      register: python_output
+    - debug: msg="{{python_output.stdout.split('\n')}}"
+
+    - name: Copy Validation script on remote host
+      copy: src={{ item }} dest=/root/
+      with_fileglob:
+         - /etc/ansible/validation.py
+
+    - name: Execute validation script
+      command: python /root/validation.py
+      register: python_output
+    - debug: msg="{{python_output.stdout.split('\n')}}"
