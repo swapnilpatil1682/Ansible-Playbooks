@@ -21,8 +21,8 @@
       local_action:
         module: ec2
         group: ep2
-        aws_access_key: AKIAJGU7FNUARKBM6U2A
-        aws_secret_key: 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       
+        aws_access_key: A******************
+        aws_secret_key: s******************      
         instance_type: t2.micro
         wait: true
         region: us-west-2
